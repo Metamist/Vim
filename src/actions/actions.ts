@@ -16,6 +16,7 @@ import { Tab, TabCommand } from './../cmd_line/commands/tab';
 import { Configuration } from './../configuration/configuration';
 import { allowVSCodeToPropagateCursorUpdatesAndReturnThem } from '../util';
 import { isTextTransformation } from './../transformations/transformations';
+import { Commenter } from './../commenter/commenter';
 import * as vscode from 'vscode';
 import * as clipboard from 'copy-paste';
 
@@ -5283,6 +5284,20 @@ class ActionOverrideCmdAltUp extends BaseCommand {
   public async exec(position: Position, vimState: VimState): Promise<VimState> {
     await vscode.commands.executeCommand('editor.action.insertCursorAbove');
     vimState.allCursors = await allowVSCodeToPropagateCursorUpdatesAndReturnThem();
+
+    return vimState;
+  }
+}
+
+@RegisterAction
+class ActionCommenterComment extends BaseCommand {
+  modes = [ModeName.Normal, ModeName.Visual];
+  keys = [ "\\", "c", "a" ];
+  canBeRepeatedWithDot = true;
+
+  public async exec(position: Position, vimState: VimState): Promise<VimState> {
+    var langId = vscode.window.activeTextEditor.document.languageId;
+    Commenter.toggleLineComments(vimState, [ position.line ], langId);
 
     return vimState;
   }
