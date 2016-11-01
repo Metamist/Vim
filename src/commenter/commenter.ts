@@ -403,7 +403,7 @@ export module Commenter {
     if (!delims) return;
 
     var leftDelim = delims.left + " ";
-    var regex = new RegExp(`[ \t]{1,}(${leftDelim})`);
+    var regex = new RegExp(`[ \t]{0,}(${leftDelim}{0,})`);
     for (var index of lines) {
       var line = TextEditor.getLineAt(new Position(index, 0));
 
